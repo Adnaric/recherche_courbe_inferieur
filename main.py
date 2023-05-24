@@ -1,9 +1,13 @@
+import matplotlib as mpt 
+import matplotlib.pyplot as plt 
+import numpy as np
+
 
 jeu1 = [1,4,6,3,7,2,5]
 
 jeu2 = [2,5,3,4,8,4,6]
 
-point_intersection = []
+point_intersection = [[],[]]
 
 def comparaison_point():
     if jeu1[0] < jeu2[0]:
@@ -21,7 +25,8 @@ def comparaison_point():
             if courbe_inf == 0:
                 courbe_inf = 1
         elif jeu1[i+1] == jeu2[i+1]:
-            point_intersection.append([i+1, jeu1[i+1]])
+            point_intersection[0].append(i+1)
+            point_intersection[1].append(jeu1[i+1])
             courbe_inf == 0
         else : 
             if courbe_inf == 1:
@@ -41,7 +46,14 @@ def intersection(y1n, y2n, y1n1, y2n1,x):
     #Recherche du point d'intersection
     x_int = (b2-b1)/(a1-a2)
     y_int = (a1*b2-b1*a2)/(a1-a2)
-    point_intersection.append([x_int,y_int])
+    point_intersection[0].append(x_int)
+    point_intersection[1].append(y_int)
 
 comparaison_point()
 print(point_intersection)
+
+plt.plot(jeu1)
+plt.plot(jeu2)
+plt.plot(point_intersection[0],point_intersection[1], 'ro')
+
+plt.show()
