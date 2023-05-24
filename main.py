@@ -2,45 +2,62 @@ import matplotlib as mpt
 import matplotlib.pyplot as plt 
 import numpy as np
 
+x1=[]
+y1=[]
 
-jeu1 = [1,4,6,3,7,2,5]
+with open(r"data4.dat") as datFile:
+    donnée = [data.split() for data in datFile]
 
-jeu2 = [2,5,3,4,8,4,6]
+
+for i in range (len(donnée)-1):
+    x1.append(float(donnée[i][0]))
+    y1.append(float(donnée[i][1]))
+
+with open(r"data5.dat") as datFile:
+    donnée = [data.split() for data in datFile]
+
+x2=[]
+y2=[]
+
+for i in range (len(donnée)-1):
+    x2.append(float(donnée[i][0]))
+    y2.append(float(donnée[i][1]))
+
 
 point_intersection = [[],[]]
 
 def comparaison_point():
-    if jeu1[0] < jeu2[0]:
+    if y1[0] < y2[0]:
         courbe_inf = 1
-    elif jeu1[0]> jeu2[0]:
+    elif y1[0]> y2[0]:
         courbe_inf = 2
     else:
         courbe_inf=0
     
-    for i in range(len(jeu1)-2):
-        if jeu1[i+1] < jeu2[i+1]:
+    for i in range(len(y1)-1):
+        if y1[i+1] < y2[i+1]:
             if courbe_inf == 2:
-                intersection(jeu1[i], jeu2[i], jeu1[i+1], jeu2[i+1],i)
+                intersection(y1[i], y2[i], y1[i+1], y2[i+1],x1[i],x1[i+1])
                 courbe_inf = 1
             if courbe_inf == 0:
                 courbe_inf = 1
-        elif jeu1[i+1] == jeu2[i+1]:
+        elif y1[i+1] == y2[i+1]:
             point_intersection[0].append(i+1)
-            point_intersection[1].append(jeu1[i+1])
+            point_intersection[1].append(y1[i+1])
             courbe_inf == 0
         else : 
             if courbe_inf == 1:
-                intersection(jeu1[i], jeu2[i], jeu1[i+1], jeu2[i+1],i)
+                intersection(y1[i], y2[i], y1[i+1], y2[i+1],x1[i],x1[i+1])
                 courbe_inf = 2
             if courbe_inf == 0:
                 courbe_inf = 2
     
 
 
-def intersection(y1n, y2n, y1n1, y2n1,x):
+def intersection(y1n, y2n, y1n1, y2n1,x,xn1):
     #Recherche des fonction affines
-    a1 = (y1n1-y1n)/(x+1-x)
-    a2 = (y2n1-y2n)/(x+1-x)
+    a1 = (y1n1-y1n)/(xn1-x)
+    a2 = (y2n1-y2n)/(xn1-x)
     b1 = y1n - a1 * x
     b2 = y2n - a2 * x
     #Recherche du point d'intersection
@@ -52,8 +69,9 @@ def intersection(y1n, y2n, y1n1, y2n1,x):
 comparaison_point()
 print(point_intersection)
 
-plt.plot(jeu1)
-plt.plot(jeu2)
+
+plt.plot(x1,y1)
+plt.plot(x2,y2)
 plt.plot(point_intersection[0],point_intersection[1], 'ro')
 
 plt.show()
