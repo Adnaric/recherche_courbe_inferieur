@@ -32,23 +32,29 @@ for i in range (len(donnée)-1):
     y2.append(float(donnée[i][1]))
 
 
-point_intersection = [[],[]]
+point_intersection = [[0],[0]]
+courbe_inf_int = []
 
 def comparaison_point():
     if y1[0] < y2[0]:
         courbe_inf = 1
+        courbe_inf_int.append(1)
     elif y1[0]> y2[0]:
         courbe_inf = 2
+        courbe_inf_int.append(2)
     else:
         courbe_inf=0
+        
     
     for i in range(len(y1)-2):
         if y1[i+1] < y2[i+1]:
             if courbe_inf == 2:
                 intersection(y1[i], y2[i], y1[i+1], y2[i+1],x1[i],x1[i+1])
                 courbe_inf = 1
+                courbe_inf_int.append(1)
             if courbe_inf == 0:
                 courbe_inf = 1
+                courbe_inf_int.append(1)
         elif y1[i+1] == y2[i+1]:
             point_intersection[0].append(i+1)
             point_intersection[1].append(y1[i+1])
@@ -56,9 +62,11 @@ def comparaison_point():
         else : 
             if courbe_inf == 1:
                 intersection(y1[i], y2[i], y1[i+1], y2[i+1],x1[i],x1[i+1])
+                courbe_inf_int.append(2)
                 courbe_inf = 2
             if courbe_inf == 0:
                 courbe_inf = 2
+                courbe_inf_int.append(2)
     
 
 
@@ -79,7 +87,7 @@ print(point_intersection)
 
 with open(nom1+nom2+"point_d'intersection.dat","w")as fichier:
     for i in range(len(point_intersection[0])):
-        fichier.write(str(point_intersection[0][i])+' '+str(point_intersection[1][i])+'\n')
+        fichier.write(str(point_intersection[0][i])+' '+str(point_intersection[1][i])+' '+str(courbe_inf_int[i])+'\n')
 
 
 plt.plot(x1,y1)
