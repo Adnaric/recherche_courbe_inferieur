@@ -77,6 +77,10 @@ def intersection(y1n, y2n, y1n1, y2n1,x,xn1):
 comparaison_point()
 print(point_intersection)
 
+with open(nom1+nom2+"point_d'intersection.dat","w")as fichier:
+    for i in range(len(point_intersection[0])):
+        fichier.write(str(point_intersection[0][i])+' '+str(point_intersection[1][i])+'\n')
+
 
 plt.plot(x1,y1)
 plt.plot(x2,y2)
