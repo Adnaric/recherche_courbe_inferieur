@@ -5,7 +5,15 @@ import numpy as np
 x1=[]
 y1=[]
 
-with open(r"data4.dat") as datFile:
+print('Entrez le nom du premier fichier:')
+
+nom1 = input()
+
+print('Entrez le nom du deuxième fichier: ')
+
+nom2 = input()
+
+with open(nom1+'.dat','r') as datFile:
     donnée = [data.split() for data in datFile]
 
 
@@ -13,7 +21,7 @@ for i in range (len(donnée)-1):
     x1.append(float(donnée[i][0]))
     y1.append(float(donnée[i][1]))
 
-with open(r"data5.dat") as datFile:
+with open(nom2+'.dat','r') as datFile:
     donnée = [data.split() for data in datFile]
 
 x2=[]
@@ -34,7 +42,7 @@ def comparaison_point():
     else:
         courbe_inf=0
     
-    for i in range(len(y1)-1):
+    for i in range(len(y1)-2):
         if y1[i+1] < y2[i+1]:
             if courbe_inf == 2:
                 intersection(y1[i], y2[i], y1[i+1], y2[i+1],x1[i],x1[i+1])
