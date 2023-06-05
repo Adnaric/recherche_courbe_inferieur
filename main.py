@@ -2,40 +2,30 @@ import matplotlib as mpt
 import matplotlib.pyplot as plt 
 import numpy as np
 
-x1=[]
-y1=[]
 
-print('Entrez le nom du premier fichier:')
-
-nom1 = input()
-
-print('Entrez le nom du deuxième fichier: ')
-
-nom2 = input()
-
-with open(nom1+'.dat','r') as datFile:
-    donnée = [data.split() for data in datFile]
-
-
-for i in range (len(donnée)-1):
-    x1.append(float(donnée[i][0]))
-    y1.append(float(donnée[i][1]))
-
-with open(nom2+'.dat','r') as datFile:
-    donnée = [data.split() for data in datFile]
-
-x2=[]
-y2=[]
-
-for i in range (len(donnée)-1):
-    x2.append(float(donnée[i][0]))
-    y2.append(float(donnée[i][1]))
+nb_fichier = 1
+continuer = True
+while continuer==True:
+    print('Entrez le nom du'+' fichier'+ str(nb_fichier)+':')
+    nom = input()
+    if nom !='':
+        with open(nom+'.dat','r') as datFile:
+            donnée = [data.split() for data in datFile]
+        exec('x'+str(nb_fichier)+'=[]')
+        exec('y'+str(nb_fichier)+'=[]')
+        for i in range (len(donnée)-1):
+            exec('x'+str(nb_fichier)+'.append(float(donnée['+str(i)+'][0]))')
+            exec('y'+str(nb_fichier)+'.append(float(donnée['+str(i)+'][1]))')
+        nb_fichier+=1
+    else:
+        continuer = False
+    
 
 
 point_intersection = [[0],[0]]
 courbe_inf_int = []
 
-def comparaison_point():
+def comparaison_point(y1,y2,x1,x2):
     if y1[0] < y2[0]:
         courbe_inf = 1
         courbe_inf_int.append(1)
@@ -82,16 +72,19 @@ def intersection(y1n, y2n, y1n1, y2n1,x,xn1):
     point_intersection[0].append(x_int)
     point_intersection[1].append(y_int)
 
-comparaison_point()
-print(point_intersection)
 
-with open(nom1+nom2+"point_d'intersection.dat","w")as fichier:
-    for i in range(len(point_intersection[0])):
-        fichier.write(str(point_intersection[0][i])+' '+str(point_intersection[1][i])+' '+str(courbe_inf_int[i])+'\n')
+for i in range(1,nb_fichier-1):
+    for j in range(i+1,nb_fichier):
+        exec('comparaison_point(y'+str(i)+',y'+str(j)+',x'+str(i)+',x'+str(j)+')')
+
+with open("point_d'intersection.dat","w")as fichier:
+    for i in range(len(point_intersection[0])-1):
+        fichier.write(str(point_intersection[0][i])+' '+str(point_intersection[1][i]))
+
+for i in range(1,nb_fichier):
+    exec('plt.plot(x'+ str(i)+',y'+str(i)+')')
 
 
-plt.plot(x1,y1)
-plt.plot(x2,y2)
 plt.plot(point_intersection[0],point_intersection[1], 'ro')
 
 plt.show()
