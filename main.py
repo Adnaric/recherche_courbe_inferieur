@@ -82,16 +82,44 @@ for i in range(1,nb_fichier-1):
     for j in range(i+1,nb_fichier):
         exec('comparaison_point(y'+str(i)+',y'+str(j)+',x'+str(i)+',x'+str(j)+','+str(i)+','+str(j)+')')
 
-# with open("point_d'intersection.dat","w")as fichier:
-#     for i in range(len(point_intersection[0])-1):
-#         fichier.write(str(point_intersection[0][i])+' '+str(point_intersection[1][i]))
+
+ 
+premiere_ligne = ''
+for i in range(1,nb_fichier-1):
+    for j in range(i+1,nb_fichier):
+        exec("premiere_ligne += 'Courbe_"+str(i)+"_"+str(j)+"\t\t\t'")
+
+with open("point_d'intersection.dat","w")as fichier:
+    fichier.write(premiere_ligne+'\n')
+    deuxieme_ligne = ''
+    for i in range(1,nb_fichier-1):
+        for j in range(i+1,nb_fichier):
+            deuxieme_ligne+='x\ty\t'
+    fichier.write(deuxieme_ligne+'\n')
+    k=0
+    l = 0
+    ligne = ''
+    while k < 5:
+        for i in range(1,nb_fichier-1):
+            for j in range(i+1,nb_fichier):
+
+                exec("if len(point_intersection_"+str(i)+"_et_"+str(j)+"[0])-1>l: ligne +=str(point_intersection_"+str(i)+"_et_"+str(j)+"[0][l-2])+'\t'+str(point_intersection_"+str(i)+"_et_"+str(j)+"[1][l-2])+'\t'")
+                    #exec("ligne +=str(point_intersection_"+str(i)+"_et_"+str(j)"[0][l])+'  '+str(point_intersection_"+str(i)+"_et_"+str(j)"[1][l])+' '")
+                exec("if len(point_intersection_"+str(i)+"_et_"+str(j)+"[0])-1<l: ligne+='\t\t\t\t'; k+=1")
+        l +=1
+        fichier.write(ligne+'\n')        
+
+
+        
+
+
 
 for i in range(1,nb_fichier):
     exec('plt.plot(x'+ str(i)+',y'+str(i)+')')
 
 for i in range(1,nb_fichier-1):
     for j in range(i+1,nb_fichier):
-        exec("plt.plot(point_intersection_"+str(i)+"_et_"+str(j)+"[0],point_intersection_"+str(i)+"_et_"+str(j)+"[1], 'ro')")
+        exec("plt.plot(point_intersection_"+str(i)+"_et_"+str(j)+"[0],point_intersection_"+str(i)+"_et_"+str(j)+"[1],'ro')")
 
 
 
