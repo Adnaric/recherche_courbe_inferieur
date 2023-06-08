@@ -77,13 +77,99 @@ def intersection(y1n, y2n, y1n1, y2n1,x,xn1, num_courbe1,num_courbe2):
     exec('point_intersection_'+str(num_courbe1)+'_et_'+str(num_courbe2)+'[0].append(x_int)')
     exec('point_intersection_'+str(num_courbe1)+'_et_'+str(num_courbe2)+'[1].append(y_int)')
 
+def courbe_mini():
+    y_min = y1[0]
+    courbe = 1
+    for i in range(2,nb_fichier):
+        y_temp = globals()['y'+str(i)][0]
+        if y_temp < y_min:
+            y_min = y_temp
+            courbe = i
+        elif y_temp == y_min:
+            y_temp = globals()['y'+str(i)][1]
+            if y_temp < y_min:
+                courbe = i
+    return courbe, y_min
+
+
+def trouve_intersection(xn1,xn2,courbe):
+    # if courbe == 1:
+    #     for i in range(2,nb_fichier):
+    #         taille = len(globals()['point_intersection_1_et_'+str(i)][0])
+    #         for j in range(taille-1):
+    #             x_temp = globals()["point_intersection_1_et_"+str(i)][0][j]
+    #             if x_temp > xn2:
+    #                 break
+    #             if xn1 < x_temp and x_temp < xn2:
+    #                 y_temp = globals()["point_intersection_1_et_"+str(i)][1][j]
+    #                 return x_temp, y_temp, i
+    courbe_temp = 0
+    x_mini = 0
+    y_mini = 0
+    for i in range(1, courbe):
+        print(i, courbe)
+        taille = len(globals()["point_intersection_"+str(i)+"_et_"+str(courbe)][0])
+        for j in range(taille):
+            x_temp = globals()["point_intersection_"+str(i)+"_et_"+str(courbe)][0][j]
+            if xn1 < x_temp and x_temp < xn2:
+                y_temp = globals()["point_intersection_"+str(i)+"_et_"+str(courbe)][1][j]
+                if y_mini == 0:
+                    x_mini = x_temp
+                    y_mini = y_temp
+                    courbe_temp = i
+                elif y_mini > y_temp:
+                    x_mini = x_temp
+                    y_mini = y_temp
+                    courbe_temp = i
+    for i in range (courbe+1, nb_fichier):
+        print(courbe,i)
+        taille = len(globals()["point_intersection_"+str(courbe)+"_et_"+str(i)][0])
+        for j in range(taille):
+            x_temp = globals()["point_intersection_"+str(courbe)+"_et_"+str(i)][0][j]
+            if xn1 < x_temp and x_temp < xn2:
+                y_temp = globals()["point_intersection_"+str(courbe)+"_et_"+str(i)][1][j]
+                if y_mini == 0:
+                    x_mini = x_temp
+                    y_mini = y_temp
+                    courbe_temp = i
+                elif y_mini > y_temp:
+                    x_mini = x_temp
+                    y_mini = y_temp
+                    courbe_temp = i
+    return x_mini,y_mini,courbe_temp
+
 
 for i in range(1,nb_fichier-1):
     for j in range(i+1,nb_fichier):
         exec('comparaison_point(y'+str(i)+',y'+str(j)+',x'+str(i)+',x'+str(j)+','+str(i)+','+str(j)+')')
 
 
- 
+courbe_minim, y_mini = courbe_mini()
+exec("x_mini = x"+str(courbe_minim)+"[0]")
+tab_courbe_mini = [[x_mini],[y_mini]]
+for i in range (len(globals()["x"+str(courbe_minim)])-2):
+    x_temp, y_temp, courbe_temp = trouve_intersection(globals()["x"+str(courbe_minim)][i], globals()["x"+str(courbe_minim)][i+1], courbe_minim)
+    if courbe_temp != 0:
+        tab_courbe_mini[0].append(x_temp)
+        tab_courbe_mini[1].append(y_temp)
+        courbe_minim = courbe_temp
+        while courbe_temp !=0:
+            x_temp, y_temp,courbe_temp = trouve_intersection(x_temp,globals()["x"+str(courbe_minim)][i+1], courbe_minim )
+            if courbe_temp != 0:
+                tab_courbe_mini[0].append(x_temp)
+                tab_courbe_mini[1].append(y_temp)
+                courbe_minim = courbe_temp
+        exec("x_temp,y_temp = x"+str(courbe_minim)+"[i+1], y"+str(courbe_minim)+"[i+1]")
+        tab_courbe_mini[0].append(x_temp)
+        tab_courbe_mini[1].append(y_temp)
+    if courbe_temp ==0:
+        exec("x_temp,y_temp = x"+str(courbe_minim)+"[i+1], y"+str(courbe_minim)+"[i+1]")
+        tab_courbe_mini[0].append(x_temp)
+        tab_courbe_mini[1].append(y_temp)
+
+
+
+
 premiere_ligne = ''
 for i in range(1,nb_fichier-1):
     for j in range(i+1,nb_fichier):
@@ -110,17 +196,20 @@ with open("point_d'intersection.dat","w")as fichier:
         fichier.write(ligne+'\n')        
 
 
-        
+
+
 
 
 
 for i in range(1,nb_fichier):
-    exec('plt.plot(x'+ str(i)+',y'+str(i)+')')
+    plt.plot(globals()["x"+ str(i)],globals()["y"+str(i)], label='courbe'+str(i))
+
+plt.legend()
 
 for i in range(1,nb_fichier-1):
     for j in range(i+1,nb_fichier):
-        exec("plt.plot(point_intersection_"+str(i)+"_et_"+str(j)+"[0],point_intersection_"+str(i)+"_et_"+str(j)+"[1],'ro')")
+        plt.plot(globals()["point_intersection_"+str(i)+"_et_"+str(j)][0], globals()["point_intersection_"+str(i)+"_et_"+str(j)][1],'ro')
 
-
+plt.plot(tab_courbe_mini[0], tab_courbe_mini[1],'y')
 
 plt.show()
