@@ -13,7 +13,7 @@ while continuer==True:
             donnée = [data.split() for data in datFile]
         exec('x'+str(nb_fichier)+'=[]')
         exec('y'+str(nb_fichier)+'=[]')
-        for i in range (len(donnée)-1):
+        for i in range (len(donnée)):
             exec('x'+str(nb_fichier)+'.append(float(donnée['+str(i)+'][0]))')
             exec('y'+str(nb_fichier)+'.append(float(donnée['+str(i)+'][1]))')
         nb_fichier+=1
@@ -41,7 +41,7 @@ def comparaison_point(y1,y2,x1,x2,num_courbe1, num_courbe2):
         courbe_inf=0
         
     
-    for i in range(len(y1)-2):
+    for i in range(len(y1)-1):
         if y1[i+1] < y2[i+1]:
             if courbe_inf == 2:
                 intersection(y1[i], y2[i], y1[i+1], y2[i+1],x1[i],x1[i+1],num_courbe1,num_courbe2)
@@ -62,8 +62,34 @@ def comparaison_point(y1,y2,x1,x2,num_courbe1, num_courbe2):
             if courbe_inf == 0:
                 courbe_inf = 2
                 exec('courbe_inf_int_'+str(num_courbe1)+'_et_'+str(num_courbe2)+'.append(2)')
-    
 
+# vrai_courbe_mini= [[0],[0]]
+
+# def courbe_mini_de_mini():
+#     i = 0
+#     j = 0
+#     while x1[i] != 800.0:
+#         i +=1
+#     while x2[j] != 800.0:
+#         j +=1
+#     a1 = (y1[i+1]-y1[i])/(x1[i+1]-x1[i])
+#     a2 = (y2[j+1]-y2[j])/(x2[j+1]-x2[j])
+#     b1 = y1[i]- a1 * x1[i]
+#     b2 = y2[j] - a2 * x1[i]
+#     x_int = (b2-b1)/(a1-a2)
+#     y_int = (a1*b2-b1*a2)/(a1-a2)
+#     for k in range(i+1):
+#         vrai_courbe_mini[0].append(x1[k])
+#         vrai_courbe_mini[1].append(y1[k])
+    
+#     vrai_courbe_mini[0].append(x_int)
+#     vrai_courbe_mini[1].append(y_int)
+
+#     for k in range(j+1, len(x2)):
+#         vrai_courbe_mini[0].append(x2[k])
+#         vrai_courbe_mini[1].append(y2[k])
+
+        
 
 def intersection(y1n, y2n, y1n1, y2n1,x,xn1, num_courbe1,num_courbe2):
     #Recherche des fonction affines
@@ -92,7 +118,7 @@ def courbe_mini():
     return courbe, y_min
 
 
-def trouve_intersection(xn1,xn2,courbe):
+def trouve_intersection(xn1,xn2,courbe,k):
     # if courbe == 1:
     #     for i in range(2,nb_fichier):
     #         taille = len(globals()['point_intersection_1_et_'+str(i)][0])
@@ -117,7 +143,7 @@ def trouve_intersection(xn1,xn2,courbe):
                     x_mini = x_temp
                     y_mini = y_temp
                     courbe_temp = i
-                elif y_mini > y_temp:
+                elif x_mini > x_temp:
                     x_mini = x_temp
                     y_mini = y_temp
                     courbe_temp = i
@@ -132,7 +158,7 @@ def trouve_intersection(xn1,xn2,courbe):
                     x_mini = x_temp
                     y_mini = y_temp
                     courbe_temp = i
-                elif y_mini > y_temp:
+                elif x_mini > x_temp:
                     x_mini = x_temp
                     y_mini = y_temp
                     courbe_temp = i
@@ -147,14 +173,14 @@ for i in range(1,nb_fichier-1):
 courbe_minim, y_mini = courbe_mini()
 exec("x_mini = x"+str(courbe_minim)+"[0]")
 tab_courbe_mini = [[x_mini],[y_mini]]
-for i in range (len(globals()["x"+str(courbe_minim)])-2):
-    x_temp, y_temp, courbe_temp = trouve_intersection(globals()["x"+str(courbe_minim)][i], globals()["x"+str(courbe_minim)][i+1], courbe_minim)
+for i in range (len(globals()["x"+str(courbe_minim)])-1):
+    x_temp, y_temp, courbe_temp = trouve_intersection(globals()["x"+str(courbe_minim)][i], globals()["x"+str(courbe_minim)][i+1], courbe_minim,i)
     if courbe_temp != 0:
         tab_courbe_mini[0].append(x_temp)
         tab_courbe_mini[1].append(y_temp)
         courbe_minim = courbe_temp
         while courbe_temp !=0:
-            x_temp, y_temp,courbe_temp = trouve_intersection(x_temp,globals()["x"+str(courbe_minim)][i+1], courbe_minim )
+            x_temp, y_temp,courbe_temp = trouve_intersection(x_temp,globals()["x"+str(courbe_minim)][i+1], courbe_minim,i )
             if courbe_temp != 0:
                 tab_courbe_mini[0].append(x_temp)
                 tab_courbe_mini[1].append(y_temp)
@@ -196,9 +222,14 @@ with open("point_d'intersection.dat","w")as fichier:
         fichier.write(ligne+'\n')        
 
 
-
-
-
+with open("courbe_minimal.dat","w") as fichier:
+    for i in range (len(tab_courbe_mini[0])):
+        if i!=len(tab_courbe_mini[0])-1:
+            if tab_courbe_mini[0][i] != tab_courbe_mini[0][i+1] and tab_courbe_mini[0][i] != tab_courbe_mini[0][i+1]:
+                fichier.write(str(tab_courbe_mini[0][i])+'\t'+str(tab_courbe_mini[1][i])+'\n')
+        else:
+            if tab_courbe_mini[0][i] != tab_courbe_mini[0][i-1] and tab_courbe_mini[0][i] != tab_courbe_mini[0][i-1]:
+                fichier.write(str(tab_courbe_mini[0][i])+'\t'+str(tab_courbe_mini[1][i])+'\n')
 
 
 for i in range(1,nb_fichier):
@@ -211,5 +242,16 @@ for i in range(1,nb_fichier-1):
         plt.plot(globals()["point_intersection_"+str(i)+"_et_"+str(j)][0], globals()["point_intersection_"+str(i)+"_et_"+str(j)][1],'ro')
 
 plt.plot(tab_courbe_mini[0], tab_courbe_mini[1],'y')
+
+# courbe_mini_de_mini()
+# plt.plot(vrai_courbe_mini[0], vrai_courbe_mini[1],'y')
+
+# with open("vrai_courbe_minimal",'w') as fichier:
+#     for i in range (len(vrai_courbe_mini[0])):
+#         fichier.write(str(vrai_courbe_mini[0][i])+'\t'+str(vrai_courbe_mini[1][i])+'\n')
+
+
+
+
 
 plt.show()
